@@ -77,7 +77,10 @@ class BukkitEntity implements Entity {
     @Override
     public boolean setLocation(Location location) {
         org.bukkit.entity.Entity entity = entityRef.get();
-        if (entity != null) {
+        if (entity == null) {
+            return false;
+        }
+        if (FoliaScheduler.isFolia()) {
             FoliaScheduler.getEntityScheduler().run(
                 entity,
                 WorldEditPlugin.getInstance(),
@@ -85,9 +88,8 @@ class BukkitEntity implements Entity {
                 null
             );
             return true;
-        } else {
-            return false;
         }
+        return entity.teleport(BukkitAdapter.adapt(location));
     }
 
     @Override
